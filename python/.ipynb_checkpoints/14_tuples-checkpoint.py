@@ -1,0 +1,38 @@
+t = (1, 2, 3, 4, 5)
+print("Tuple:", t)
+print("First element:", t[0])
+print("Last element:", t[-1])
+print("Second last:", t[-2])
+
+print("\nAccess range:")
+print("t[1:4]:", t[1:4])
+print("t[:3]:", t[:3])
+print("t[2:]:", t[2:])
+print("t[::2]:", t[::2])
+
+print("\nNegative indexing:")
+print("t[-3:]:", t[-3:])
+print("t[:-2]:", t[:-2])
+
+t2 = (6, 7, 8)
+t3 = t + t2
+print("\nConcatenation:", t3)
+
+t4 = t * 2
+print("Repetition:", t4)
+
+print("\nUnpacking:")
+a, b, c, d, e = t
+print("a, b, c, d, e =", a, b, c, d, e)
+
+t5 = (1, 2, [3, 4], (5, 6))
+print("\nNested tuple:", t5)
+
+print("\nTuples are immutable:")
+try:
+    t[0] = 10
+except TypeError as e:
+    print("Error: Cannot modify tuple")
+
+del t5
+print("Tuple deleted successfully")
