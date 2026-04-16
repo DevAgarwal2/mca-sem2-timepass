@@ -3,11 +3,14 @@ from tkinter import ttk, messagebox
 import mysql.connector
 from mysql.connector import Error
 
+connection = None
+db_connected = False
+
 try:
     connection = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='root',
+        password='',
         database='college_db'
     )
     if connection.is_connected():
@@ -22,7 +25,7 @@ def connect_db():
         connection = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='root',
+            password='',
             database='college_db'
         )
         if connection.is_connected():
@@ -36,6 +39,7 @@ def connect_db():
         return False
 
 def create_table():
+    global connection
     try:
         cursor = connection.cursor()
         cursor.execute("""
@@ -54,6 +58,7 @@ def create_table():
         messagebox.showerror("Error", f"Failed to create table: {e}")
 
 def insert_record():
+    global connection
     name = entry_name.get()
     roll = entry_roll.get()
     email = entry_email.get()
@@ -79,6 +84,7 @@ def insert_record():
         messagebox.showerror("Error", f"Failed to insert: {e}")
 
 def show_records():
+    global connection
     try:
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM students")
@@ -94,6 +100,7 @@ def show_records():
         messagebox.showerror("Error", f"Failed to fetch records: {e}")
 
 def delete_record():
+    global connection
     selected = tree.selection()
     if not selected:
         messagebox.showwarning("Warning", "Please select a record to delete!")
@@ -111,6 +118,7 @@ def delete_record():
         messagebox.showerror("Error", f"Failed to delete: {e}")
 
 def update_record():
+    global connection
     selected = tree.selection()
     if not selected:
         messagebox.showwarning("Warning", "Please select a record to update!")
@@ -124,6 +132,7 @@ def update_record():
     entry_course.insert(0, values[5])
     
     def save_update():
+        global connection
         try:
             cursor = connection.cursor()
             cursor.execute("""
@@ -140,7 +149,7 @@ def update_record():
         except Error as e:
             messagebox.showerror("Error", f"Failed to update: {e}")
     
-    btn_save_update.pack(inplace=btn_update, side='left', padx=5)
+    btn_save_update.pack(after=btn_update, side='left', padx=5)
     btn_update.config(state='disabled')
 
 def clear_form():
@@ -186,10 +195,10 @@ btn_insert.pack(side='left', padx=5)
 btn_show = tk.Button(frame_buttons, text="SHOW ALL", command=show_records, bg='blue', fg='white', width=10)
 btn_show.pack(side='left', padx=5)
 
-btn_update = tk.Button(frame_buttons, text="UPDATE", command=update_record, bg='orange', fg='white', width=10)
+btn_update = tk.Button(frame_buttons, text="UPDATE", command=update_record, bg='gray', fg='white', width=10)
 btn_update.pack(side='left', padx=5)
 
-btn_delete = tk.Button(frame_buttons, text="DELETE", command=delete_record, bg='red', fg='white', width=10)
+btn_delete = tk.Button(frame_buttons, text="DELETE", command=delete_record, bg='gray', fg='white', width=10)
 btn_delete.pack(side='left', padx=5)
 
 btn_clear = tk.Button(frame_buttons, text="CLEAR", command=clear_form, bg='gray', fg='white', width=10)
