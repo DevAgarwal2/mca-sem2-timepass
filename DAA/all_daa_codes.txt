@@ -1,0 +1,1506 @@
+========================================
+FILE: 1_rotate_array.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void rotate(vector<int>& nums, int k) {
+    int n = nums.size();
+    k = k % n;
+    reverse(nums.begin(), nums.end());
+    reverse(nums.begin(), nums.begin() + k);
+    reverse(nums.begin() + k, nums.end());
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7};
+    vector<int> nums(arr, arr + 7);
+    int k = 3;
+    rotate(nums, k);
+    for (int x : nums) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: 10_single_element.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int singleNonDuplicate(vector<int>& nums) {
+    int n = nums.size();
+    int left = 0, right = n - 1;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (mid % 2 == 1) mid--;
+        if (nums[mid] == nums[mid + 1]) left = mid + 2;
+        else right = mid;
+    }
+    return nums[left];
+}
+
+int main() {
+    int arr[] = {1, 1, 2, 3, 3, 4, 4, 8, 8};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> nums(arr, arr + n);
+    cout << singleNonDuplicate(nums);
+    return 0;
+}
+
+
+
+========================================
+FILE: 11_kth_smallest_multiplication.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int countLessEqual(int m, int n, long long x) {
+    int count = 0;
+    for (int i = 1; i <= m; i++) {
+        count += min((long long)n, x / i);
+    }
+    return count;
+}
+
+int findKthNumber(int m, int n, int k) {
+    int left = 1, right = m * n;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (countLessEqual(m, n, mid) < k) left = mid + 1;
+        else right = mid;
+    }
+    return left;
+}
+
+int main() {
+    int m = 3, n = 3, k = 5;
+    cout << findKthNumber(m, n, k);
+    return 0;
+}
+
+
+
+========================================
+FILE: 12_reverse_k_group.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+ListNode* reverseKGroup(ListNode* head, int k) {
+    if (!head || k == 1) return head;
+    ListNode* dummy = new ListNode(0);
+    dummy->next = head;
+    ListNode* curr = dummy;
+    while (curr) {
+        ListNode* prev = curr;
+        ListNode* start = curr->next;
+        ListNode* end = curr;
+        for (int i = 0; i < k && end; i++) end = end->next;
+        if (!end) break;
+        ListNode* nextGroup = end->next;
+        ListNode* prevNode = nextGroup;
+        ListNode* node = start;
+        while (node != nextGroup) {
+            ListNode* tmp = node->next;
+            node->next = prevNode;
+            prevNode = node;
+            node = tmp;
+        }
+        curr->next = end;
+        curr = start;
+    }
+    return dummy->next;
+}
+
+void printList(ListNode* head) {
+    while (head) {
+        cout << head->val << " ";
+        head = head->next;
+    }
+}
+
+int main() {
+    ListNode* head = new ListNode(1);
+    head->next = new ListNode(2);
+    head->next->next = new ListNode(3);
+    head->next->next->next = new ListNode(4);
+    head->next->next->next->next = new ListNode(5);
+    int k = 2;
+    ListNode* result = reverseKGroup(head, k);
+    printList(result);
+    return 0;
+}
+
+
+
+========================================
+FILE: 13_middle_linked_list.cpp
+========================================
+#include <iostream>
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+ListNode* middleNode(ListNode* head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+int main() {
+    ListNode* head = new ListNode(1);
+    head->next = new ListNode(2);
+    head->next->next = new ListNode(3);
+    head->next->next->next = new ListNode(4);
+    head->next->next->next->next = new ListNode(5);
+    ListNode* mid = middleNode(head);
+    cout << mid->val;
+    return 0;
+}
+
+
+
+========================================
+FILE: 14_remove_duplicates_sorted.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int removeDuplicates(vector<int>& nums) {
+    if (nums.empty()) return 0;
+    int i = 0;
+    for (int j = 1; j < nums.size(); j++) {
+        if (nums[j] != nums[i]) {
+            i++;
+            nums[i] = nums[j];
+        }
+    }
+    return i + 1;
+}
+
+int main() {
+    int arr[] = {0, 0, 1, 1, 1, 2, 2, 3, 3, 4};
+    vector<int> nums(arr, arr + 10);
+    int k = removeDuplicates(nums);
+    cout << k << endl;
+    for (int i = 0; i < k; i++) cout << nums[i] << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: 15_array_partition.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int arrayPairSum(vector<int>& nums) {
+    sort(nums.begin(), nums.end());
+    int sum = 0;
+    for (int i = 0; i < nums.size(); i += 2) sum += nums[i];
+    return sum;
+}
+
+int main() {
+    int arr[] = {1, 4, 3, 2};
+    vector<int> nums(arr, arr + 4);
+    cout << arrayPairSum(nums);
+    return 0;
+}
+
+
+
+========================================
+FILE: 16_valid_palindrome_ii.cpp
+========================================
+#include <iostream>
+#include <string>
+using namespace std;
+
+bool isPalindrome(const string& s, int left, int right) {
+    while (left < right) {
+        if (s[left] != s[right]) return false;
+        left++; right--;
+    }
+    return true;
+}
+
+bool validPalindrome(const string& s) {
+    int left = 0, right = s.size() - 1;
+    while (left < right) {
+        if (s[left] == s[right]) {
+            left++; right--;
+        } else {
+            return isPalindrome(s, left + 1, right) || isPalindrome(s, left, right - 1);
+        }
+    }
+    return true;
+}
+
+int main() {
+    string s = "abca";
+    cout << (validPalindrome(s) ? "true" : "false");
+    return 0;
+}
+
+
+
+========================================
+FILE: 17_max_earnings_taxi.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Taxi {
+    int start, end, tip;
+};
+
+bool compareTaxi(const Taxi& a, const Taxi& b) {
+    return a.end < b.end;
+}
+
+int maxTaxiEarnings(int n, vector<Taxi>& rides) {
+    sort(rides.begin(), rides.end(), compareTaxi);
+    vector<long long> dp(n + 1, 0);
+    for (int i = 0; i < rides.size(); i++) {
+        long long include = rides[i].end - rides[i].start + rides[i].tip;
+        if (rides[i].start > 0) include += dp[rides[i].start];
+        dp[rides[i].end] = max(dp[rides[i].end - 1], include);
+    }
+    return dp[n];
+}
+
+int main() {
+    vector<Taxi> rides;
+    Taxi t1 = {1, 6, 4}, t2 = {2, 5, 2}, t3 = {5, 7, 5};
+    rides.push_back(t1); rides.push_back(t2); rides.push_back(t3);
+    cout << maxTaxiEarnings(7, rides);
+    return 0;
+}
+
+
+
+========================================
+FILE: 18_max_units_truck.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool compareBoxes(const vector<int>& a, const vector<int>& b) {
+    return a[1] > b[1];
+}
+
+int maximumUnits(vector<vector<int> > boxTypes, int truckSize) {
+    sort(boxTypes.begin(), boxTypes.end(), compareBoxes);
+    int units = 0;
+    int remaining = truckSize;
+    for (int i = 0; i < boxTypes.size(); i++) {
+        if (remaining == 0) break;
+        int take = min(boxTypes[i][0], remaining);
+        units += take * boxTypes[i][1];
+        remaining -= take;
+    }
+    return units;
+}
+
+int main() {
+    vector<vector<int> > boxTypes;
+    int boxes[3][2] = {{1, 3}, {2, 2}, {3, 1}};
+    for (int i = 0; i < 3; i++) {
+        vector<int> box(2);
+        box[0] = boxes[i][0];
+        box[1] = boxes[i][1];
+        boxTypes.push_back(box);
+    }
+    int truckSize = 4;
+    cout << maximumUnits(boxTypes, truckSize);
+    return 0;
+}
+
+
+
+========================================
+FILE: 19_kruskal_mst.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct DSU {
+    vector<int> parent, rank;
+    DSU(int n) : parent(n), rank(n, 0) {
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    bool unite(int x, int y) {
+        x = find(x); y = find(y);
+        if (x == y) return false;
+        if (rank[x] < rank[y]) swap(x, y);
+        parent[y] = x;
+        if (rank[x] == rank[y]) rank[x]++;
+        return true;
+    }
+};
+
+struct Edge {
+    int u, v, w;
+};
+
+bool compareEdge(const Edge& a, const Edge& b) {
+    return a.w < b.w;
+}
+
+int kruskal(int n, vector<Edge> edges) {
+    sort(edges.begin(), edges.end(), compareEdge);
+    DSU dsu(n);
+    int mst = 0;
+    for (int i = 0; i < edges.size(); i++) {
+        if (dsu.unite(edges[i].u, edges[i].v)) mst += edges[i].w;
+    }
+    return mst;
+}
+
+int main() {
+    int n = 4;
+    vector<Edge> edges;
+    Edge e1 = {0, 1, 10}, e2 = {0, 2, 6}, e3 = {0, 3, 5};
+    Edge e4 = {1, 3, 15}, e5 = {2, 3, 4};
+    edges.push_back(e1); edges.push_back(e2); edges.push_back(e3);
+    edges.push_back(e4); edges.push_back(e5);
+    cout << kruskal(n, edges);
+    return 0;
+}
+
+
+
+========================================
+FILE: 2_median_two_sorted.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    if (nums1.size() > nums2.size()) swap(nums1, nums2);
+    int m = nums1.size(), n = nums2.size();
+    int imin = 0, imax = m, half = (m + n + 1) / 2;
+    while (imin <= imax) {
+        int i = (imin + imax) / 2;
+        int j = half - i;
+        if (i < m && nums2[j - 1] > nums1[i]) imin = i + 1;
+        else if (i > 0 && nums1[i - 1] > nums2[j]) imax = i - 1;
+        else {
+            int maxLeft;
+            if (i == 0) maxLeft = nums2[j - 1];
+            else if (j == 0) maxLeft = nums1[i - 1];
+            else maxLeft = max(nums1[i - 1], nums2[j - 1]);
+            if ((m + n) % 2 == 1) return maxLeft;
+            int minRight;
+            if (i == m) minRight = nums2[j];
+            else if (j == n) minRight = nums1[i];
+            else minRight = min(nums1[i], nums2[j]);
+            return (maxLeft + minRight) / 2.0;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    int arr1[] = {1, 3};
+    int arr2[] = {2};
+    vector<int> nums1(arr1, arr1 + 2), nums2(arr2, arr2 + 1);
+    cout << findMedianSortedArrays(nums1, nums2);
+    return 0;
+}
+
+
+
+========================================
+FILE: 20_prim_mst.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+int prim(int n, vector<vector<int> > graph) {
+    vector<int> key(n, INT_MAX);
+    vector<bool> inMST(n, false);
+    key[0] = 0;
+    int mst = 0;
+    for (int i = 0; i < n; i++) {
+        int u = -1;
+        for (int v = 0; v < n; v++) {
+            if (!inMST[u == -1 || key[v] < key[u]]) u = v;
+        }
+        inMST[u] = true;
+        mst += key[u];
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] && !inMST[v] && graph[u][v] < key[v])
+                key[v] = graph[u][v];
+        }
+    }
+    return mst;
+}
+
+int main() {
+    int n = 4;
+    int g[4][4] = {{0, 10, 6, 5}, {10, 0, 0, 15}, {6, 0, 0, 4}, {5, 15, 4, 0}};
+    vector<vector<int> > graph(n, vector<int>(n));
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            graph[i][j] = g[i][j];
+    cout << prim(n, graph);
+    return 0;
+}
+
+
+
+========================================
+FILE: 21_majority_element.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int majorityElement(vector<int>& nums) {
+    int count = 0, candidate = 0;
+    for (int x : nums) {
+        if (count == 0) candidate = x;
+        count += (x == candidate) ? 1 : -1;
+    }
+    return candidate;
+}
+
+int main() {
+    int arr[] = {3, 2, 3};
+    vector<int> nums(arr, arr + 3);
+    cout << majorityElement(nums);
+    return 0;
+}
+
+
+
+========================================
+FILE: 22_reverse_bits.cpp
+========================================
+#include <iostream>
+using namespace std;
+
+uint32_t reverseBits(uint32_t n) {
+    uint32_t result = 0;
+    for (int i = 0; i < 32; i++) {
+        result = (result << 1) | (n & 1);
+        n >>= 1;
+    }
+    return result;
+}
+
+int main() {
+    uint32_t n = 43261596;
+    cout << reverseBits(n);
+    return 0;
+}
+
+
+
+========================================
+FILE: 23_super_pow.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int mod = 1337;
+
+int modPow(int a, int b) {
+    int result = 1;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1) result = (result * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+    return result;
+}
+
+int superPow(int a, vector<int>& b) {
+    if (b.empty()) return 1;
+    int last = b.back();
+    b.pop_back();
+    int part1 = modPow(a, last);
+    int part2 = superPow(a, b);
+    return (part1 * part2) % mod;
+}
+
+int main() {
+    int a = 2;
+    vector<int> b;
+    b.push_back(3);
+    cout << superPow(a, b);
+    return 0;
+}
+
+
+
+========================================
+FILE: 24_sorted_list_to_bst.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+ListNode* nodePtr;
+
+TreeNode* sortedListToBST(int start, int end) {
+    if (start > end) return NULL;
+    int mid = start + (end - start) / 2;
+    TreeNode* left = sortedListToBST(start, mid - 1);
+    TreeNode* root = new TreeNode(nodePtr->val);
+    root->left = left;
+    nodePtr = nodePtr->next;
+    root->right = sortedListToBST(mid + 1, end);
+    return root;
+}
+
+TreeNode* sortedListToBST(ListNode* head) {
+    int n = 0;
+    ListNode* temp = head;
+    while (temp) { n++; temp = temp->next; }
+    nodePtr = head;
+    return sortedListToBST(0, n - 1);
+}
+
+int main() {
+    ListNode* head = new ListNode(-10);
+    head->next = new ListNode(-3);
+    head->next->next = new ListNode(0);
+    head->next->next->next = new ListNode(5);
+    head->next->next->next->next = new ListNode(9);
+    TreeNode* root = sortedListToBST(head);
+    cout << root->val;
+    return 0;
+}
+
+
+
+========================================
+FILE: 25_reverse_pairs.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int mergeSort(vector<int>& nums, int left, int right) {
+    if (left >= right) return 0;
+    int mid = (left + right) / 2;
+    int count = mergeSort(nums, left, mid) + mergeSort(nums, mid + 1, right);
+    int j = mid + 1;
+    for (int i = mid + 1; i <= right; i++) {
+        while (j <= right && nums[i] > 2LL * nums[j]) j++;
+        count += j - (mid + 1);
+    }
+    sort(nums.begin() + left, nums.begin() + right + 1);
+    return count;
+}
+
+int reversePairs(vector<int>& nums) {
+    return mergeSort(nums, 0, nums.size() - 1);
+}
+
+int main() {
+    int arr[] = {1, 3, 2, 3, 1};
+    vector<int> nums(arr, arr + 5);
+    cout << reversePairs(nums);
+    return 0;
+}
+
+
+
+========================================
+FILE: 26_best_time_stock.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int maxProfit(vector<int>& prices) {
+    int minPrice = INT_MAX, maxProfit = 0;
+    for (int price : prices) {
+        minPrice = min(minPrice, price);
+        maxProfit = max(maxProfit, price - minPrice);
+    }
+    return maxProfit;
+}
+
+int main() {
+    int arr[] = {7, 1, 5, 3, 6, 4};
+    vector<int> prices(arr, arr + 6);
+    cout << maxProfit(prices);
+    return 0;
+}
+
+
+
+========================================
+FILE: 27_longest_increasing_subseq.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int lengthOfLIS(vector<int>& nums) {
+    if (nums.empty()) return 0;
+    vector<int> tails;
+    for (int x : nums) {
+        auto it = lower_bound(tails.begin(), tails.end(), x);
+        if (it == tails.end()) tails.push_back(x);
+        else *it = x;
+    }
+    return tails.size();
+}
+
+int main() {
+    int arr[] = {10, 9, 2, 5, 3, 7, 101, 18};
+    vector<int> nums(arr, arr + 8);
+    cout << lengthOfLIS(nums);
+    return 0;
+}
+
+
+
+========================================
+FILE: 28_edit_distance.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int minDistance(string word1, string word2) {
+    int m = word1.size(), n = word2.size();
+    vector<vector<int> > dp(m + 1, vector<int>(n + 1, 0));
+    for (int i = 0; i <= m; i++) dp[i][0] = i;
+    for (int j = 0; j <= n; j++) dp[0][j] = j;
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (word1[i-1] == word2[j-1]) dp[i][j] = dp[i-1][j-1];
+            else dp[i][j] = 1 + min(dp[i-1][j], min(dp[i][j-1], dp[i-1][j-1]));
+        }
+    }
+    return dp[m][n];
+}
+
+int main() {
+    string word1 = "horse", word2 = "ros";
+    cout << minDistance(word1, word2);
+    return 0;
+}
+
+
+
+========================================
+FILE: 29_matrix_chain_multiplication.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+int matrixChainOrder(vector<int>& p) {
+    int n = p.size() - 1;
+    vector<vector<int> > m(n, vector<int>(n, 0));
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i < n - len + 1; i++) {
+            int j = i + len - 1;
+            m[i][j] = INT_MAX;
+            for (int k = i; k < j; k++) {
+                int cost = m[i][k] + m[k+1][j] + p[i] * p[k+1] * p[j+1];
+                m[i][j] = min(m[i][j], cost);
+            }
+        }
+    }
+    return m[0][n-1];
+}
+
+int main() {
+    vector<int> p;
+    p.push_back(1); p.push_back(2); p.push_back(3);
+    p.push_back(4); p.push_back(3);
+    cout << matrixChainOrder(p);
+    return 0;
+}
+
+
+
+========================================
+FILE: 3_first_last_position.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int lowerBound(vector<int>& nums, int target) {
+    int l = 0, r = nums.size();
+    while (l < r) {
+        int m = (l + r) / 2;
+        if (nums[m] < target) l = m + 1;
+        else r = m;
+    }
+    return l;
+}
+
+int upperBound(vector<int>& nums, int target) {
+    int l = 0, r = nums.size();
+    while (l < r) {
+        int m = (l + r) / 2;
+        if (nums[m] <= target) l = m + 1;
+        else r = m;
+    }
+    return l;
+}
+
+vector<int> searchRange(vector<int>& nums, int target) {
+    int start = lowerBound(nums, target);
+    int end = upperBound(nums, target);
+        if (start == nums.size() || nums[start] != target) {
+            vector<int> notFound(2, -1);
+            return notFound;
+        }
+    vector<int> found(2);
+    found[0] = start;
+    found[1] = end - 1;
+    return found;
+}
+
+int main() {
+    int arr[] = {5, 7, 7, 8, 8, 10};
+    vector<int> nums(arr, arr + 6);
+    int target = 8;
+    vector<int> ans = searchRange(nums, target);
+    cout << ans[0] << " " << ans[1];
+    return 0;
+}
+
+
+
+========================================
+FILE: 30_coin_change_ii.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int change(int amount, vector<int>& coins) {
+    vector<int> dp(amount + 1, 0);
+    dp[0] = 1;
+    for (int coin : coins) {
+        for (int i = coin; i <= amount; i++) {
+            dp[i] += dp[i - coin];
+        }
+    }
+    return dp[amount];
+}
+
+int main() {
+    int amount = 5;
+    vector<int> coins;
+    coins.push_back(1); coins.push_back(2); coins.push_back(5);
+    cout << change(amount, coins);
+    return 0;
+}
+
+
+
+========================================
+FILE: 31_max_score_node_sequence.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int maxScoreNodeSequence(int n, vector<int> scores, vector<vector<int> > edges) {
+    vector<vector<int> > adj(n);
+    for (int i = 0; i < edges.size(); i++) {
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+    }
+    int maxScore = -1;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            for (int k = j + 1; k < n; k++) {
+                for (int l = k + 1; l < n; l++) {
+                    bool edge01 = false, edge02 = false, edge03 = false;
+                    bool edge12 = false, edge13 = false, edge23 = false;
+                    for (int e : adj[i]) {
+                        if (e == j) edge01 = true;
+                        if (e == k) edge02 = true;
+                        if (e == l) edge03 = true;
+                    }
+                    for (int e : adj[j]) {
+                        if (e == k) edge12 = true;
+                        if (e == l) edge13 = true;
+                    }
+                    for (int e : adj[k]) {
+                        if (e == l) edge23 = true;
+                    }
+                    if (edge01 && edge02 && edge12 && edge13 && edge23 && edge03) {
+                        int score = scores[i] + scores[j] + scores[k] + scores[l];
+                        if (score > maxScore) maxScore = score;
+                    }
+                }
+            }
+        }
+    }
+    return maxScore;
+}
+
+int main() {
+    int n = 5;
+    vector<int> scores;
+    scores.push_back(1); scores.push_back(2); scores.push_back(3);
+    scores.push_back(4); scores.push_back(5);
+    vector<vector<int> > edges;
+    vector<int> e1(2), e2(2), e3(2), e4(2);
+    e1[0] = 0; e1[1] = 1;
+    e2[0] = 1; e2[1] = 2;
+    e3[0] = 2; e3[1] = 3;
+    e4[0] = 3; e4[1] = 4;
+    edges.push_back(e1); edges.push_back(e2); edges.push_back(e3); edges.push_back(e4);
+    cout << maxScoreNodeSequence(n, scores, edges);
+    return 0;
+}
+
+
+
+========================================
+FILE: 32_generate_parentheses.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void backtrack(string& current, int open, int close, int n, vector<string>& result) {
+    if (current.size() == 2 * n) {
+        result.push_back(current);
+        return;
+    }
+    if (open < n) {
+        current.push_back('(');
+        backtrack(current, open + 1, close, n, result);
+        current.pop_back();
+    }
+    if (close < open) {
+        current.push_back(')');
+        backtrack(current, open, close + 1, n, result);
+        current.pop_back();
+    }
+}
+
+vector<string> generateParenthesis(int n) {
+    vector<string> result;
+    string current;
+    backtrack(current, 0, 0, n, result);
+    return result;
+}
+
+int main() {
+    int n = 3;
+    vector<string> ans = generateParenthesis(n);
+    for (int i = 0; i < ans.size(); i++) {
+        cout << ans[i] << endl;
+    }
+    return 0;
+}
+
+
+
+========================================
+FILE: 4_spiral_matrix.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> spiralOrder(vector<vector<int> >& matrix) {
+    vector<int> result;
+    if (matrix.empty()) return result;
+    int top = 0, bottom = matrix.size() - 1;
+    int left = 0, right = matrix[0].size() - 1;
+    while (top <= bottom && left <= right) {
+        for (int j = left; j <= right; j++) result.push_back(matrix[top][j]);
+        top++;
+        for (int i = top; i <= bottom; i++) result.push_back(matrix[i][right]);
+        right--;
+        if (top <= bottom) {
+            for (int j = right; j >= left; j--) result.push_back(matrix[bottom][j]);
+            bottom--;
+        }
+        if (left <= right) {
+            for (int i = bottom; i >= top; i--) result.push_back(matrix[i][left]);
+            left++;
+        }
+    }
+    return result;
+}
+
+int main() {
+    int mat[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    vector<vector<int> > matrix;
+    for (int i = 0; i < 3; i++) {
+        vector<int> row(mat[i], mat[i] + 3);
+        matrix.push_back(row);
+    }
+    vector<int> ans = spiralOrder(matrix);
+    for (int x : ans) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: 5_min_path_sum.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int minPathSum(vector<vector<int> >& grid) {
+    int m = grid.size(), n = grid[0].size();
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == 0 && j == 0) continue;
+            if (i == 0) grid[i][j] += grid[i][j - 1];
+            else if (j == 0) grid[i][j] += grid[i - 1][j];
+            else grid[i][j] += min(grid[i - 1][j], grid[i][j - 1]);
+        }
+    }
+    return grid[m - 1][n - 1];
+}
+
+int main() {
+    int gridArr[3][3] = {{1, 3, 1}, {1, 5, 1}, {4, 2, 1}};
+    vector<vector<int> > grid;
+    for (int i = 0; i < 3; i++) {
+        vector<int> row(gridArr[i], gridArr[i] + 3);
+        grid.push_back(row);
+    }
+    cout << minPathSum(grid);
+    return 0;
+}
+
+
+
+========================================
+FILE: 6_sorting_timing.cpp
+========================================
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <fstream>
+using namespace std;
+
+void selectionSortIter(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) minIdx = j;
+        }
+        swap(arr[minIdx], arr[i]);
+    }
+}
+
+void selectionSortRec(vector<int>& arr, int idx) {
+    int n = arr.size();
+    if (idx >= n - 1) return;
+    int minIdx = idx;
+    for (int j = idx + 1; j < n; j++) {
+        if (arr[j] < arr[minIdx]) minIdx = j;
+    }
+    swap(arr[minIdx], arr[idx]);
+    selectionSortRec(arr, idx + 1);
+}
+
+void insertionSortIter(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+void insertionSortRec(vector<int>& arr, int n) {
+    if (n <= 1) return;
+    insertionSortRec(arr, n - 1);
+    int last = arr[n - 1];
+    int j = n - 2;
+    while (j >= 0 && arr[j] > last) {
+        arr[j + 1] = arr[j];
+        j--;
+    }
+    arr[j + 1] = last;
+}
+
+void bubbleSortIter(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) swap(arr[j], arr[j + 1]);
+        }
+    }
+}
+
+void bubbleSortRec(vector<int>& arr, int n) {
+    if (n == 1) return;
+    for (int i = 0; i < n - 1; i++) {
+        if (arr[i] > arr[i + 1]) swap(arr[i], arr[i + 1]);
+    }
+    bubbleSortRec(arr, n - 1);
+}
+
+vector<int> generateRandom(int n) {
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) arr[i] = rand() % 10000;
+    return arr;
+}
+
+vector<int> generateSorted(int n) {
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) arr[i] = i;
+    return arr;
+}
+
+vector<int> generateReverse(int n) {
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) arr[i] = n - i;
+    return arr;
+}
+
+int main() {
+    srand(time(0));
+    ofstream fout("sorting_times.csv");
+    fout << "n,SelectionIter,SelectionRec,InsertionIter,InsertionRec,BubbleIter,BubbleRec\n";
+    int sizes[] = {100, 500, 1000, 2000, 5000};
+    for (int n : sizes) {
+        cout << "Testing n = " << n << endl;
+        fout << n;
+        vector<int> arr;
+        double start, end;
+        arr = generateRandom(n);
+        start = clock();
+        selectionSortIter(arr); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        arr = generateRandom(n);
+        start = clock();
+        selectionSortRec(arr, 0); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        arr = generateRandom(n);
+        start = clock();
+        insertionSortIter(arr); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        arr = generateRandom(n);
+        start = clock();
+        insertionSortRec(arr, arr.size()); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        arr = generateRandom(n);
+        start = clock();
+        bubbleSortIter(arr); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        arr = generateRandom(n);
+        start = clock();
+        bubbleSortRec(arr, arr.size()); end = clock();
+        fout << "," << (end - start) / CLOCKS_PER_SEC;
+        fout << "\n";
+    }
+    fout.close();
+    cout << "Results saved to sorting_times.csv" << endl;
+    return 0;
+}
+
+
+
+========================================
+FILE: 7_merge_sort_iter_rec.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    vector<int> L(n1), R(n2);
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSortIter(vector<int>& arr) {
+    int n = arr.size();
+    for (int currSize = 1; currSize < n; currSize *= 2) {
+        for (int left = 0; left < n; left += 2 * currSize) {
+            int mid = min(left + currSize - 1, n - 1);
+            int right = min(left + 2 * currSize - 1, n - 1);
+            if (mid < right) {
+                vector<int> L(arr.begin() + left, arr.begin() + mid + 1);
+                vector<int> R(arr.begin() + mid + 1, arr.begin() + right + 1);
+                int i = 0, j = 0, k = left;
+                while (i < L.size() && j < R.size()) {
+                    if (L[i] <= R[j]) arr[k++] = L[i++];
+                    else arr[k++] = R[j++];
+                }
+                while (i < L.size()) arr[k++] = L[i++];
+                while (j < R.size()) arr[k++] = R[j++];
+            }
+        }
+    }
+}
+
+void mergeSortRec(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSortRec(arr, left, mid);
+        mergeSortRec(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+void mergeSortRecWrapper(vector<int>& arr) {
+    mergeSortRec(arr, 0, arr.size() - 1);
+}
+
+int main() {
+    int arr[] = {38, 27, 43, 3, 9, 82, 10};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    mergeSortRecWrapper(vec);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: 8_quick_sort_partition_display.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+int partitionRandom(vector<int>& arr, int low, int high) {
+    int pivotIdx = low + rand() % (high - low + 1);
+    swap(arr[pivotIdx], arr[high]);
+    return partition(arr, low, high);
+}
+
+void quickSortRandom(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partitionRandom(arr, low, high);
+        cout << "After partition: ";
+        for (int x : arr) cout << x << " ";
+        cout << endl;
+        quickSortRandom(arr, low, pi - 1);
+        quickSortRandom(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    srand(time(0));
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    quickSortRandom(vec, 0, n - 1);
+    cout << "Sorted: ";
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: 9_k_weakest_rows.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int countOnes(vector<int>& row) {
+    int count = 0;
+    for (int x : row) if (x == 1) count++;
+    return count;
+}
+
+vector<int> kWeakestRows(vector<vector<int> >& mat, int k) {
+    int m = mat.size();
+    vector<pair<int, int> > soldiers;
+    for (int i = 0; i < m; i++) {
+        int cnt = countOnes(mat[i]);
+        soldiers.push_back(make_pair(cnt, i));
+    }
+    sort(soldiers.begin(), soldiers.end());
+    vector<int> result;
+    for (int i = 0; i < k; i++) result.push_back(soldiers[i].second);
+    return result;
+}
+
+int main() {
+    vector<vector<int> > mat;
+    int matArr[3][5] = {{1,1,0,0,0}, {1,1,1,0,0}, {1,0,0,0,0}};
+    for (int i = 0; i < 3; i++) {
+        vector<int> row(matArr[i], matArr[i] + 5);
+        mat.push_back(row);
+    }
+    int k = 2;
+    vector<int> ans = kWeakestRows(mat, k);
+    for (int x : ans) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: bubble_sort.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void bubbleSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    bubbleSort(vec);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: insertion_sort.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void insertionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+int main() {
+    int arr[] = {12, 11, 13, 5, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    insertionSort(vec);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: merge_sort.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    vector<int> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+int main() {
+    int arr[] = {38, 27, 43, 3, 9, 82, 10};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    mergeSort(vec, 0, vec.size() - 1);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: quick_sort.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    quickSort(vec, 0, n - 1);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
+========================================
+FILE: selection_sort.cpp
+========================================
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void selectionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        swap(arr[minIdx], arr[i]);
+    }
+}
+
+int main() {
+    int arr[] = {64, 25, 12, 22, 11};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> vec(arr, arr + n);
+    selectionSort(vec);
+    for (int x : vec) cout << x << " ";
+    return 0;
+}
+
+
+
